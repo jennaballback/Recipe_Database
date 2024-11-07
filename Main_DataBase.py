@@ -1,6 +1,6 @@
 from sqlite3 import Error
 import sqlite3 
-#test
+
 class Database:
     def __init__(self, recipe_database):
         self.recipe_database = recipe_database
@@ -9,12 +9,12 @@ class Database:
         # Create the 'recipes' table
         self.create_table(
             """
-            CREATE TABLE recipes(
+            CREATE TABLE IF NOT EXISTS recipes(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
                 Name TEXT, 
                 Type TEXT, 
                 Cuisine TEXT, 
-                Season TEXT 
+                Season TEXT DEFAULT NULL --Allows Season to be optional
             );
             """
         )
@@ -64,6 +64,9 @@ class Database:
     # Method to insert a new recipe into the recipes table
     def add_data(self, data):
         sql = "INSERT INTO recipes(Name, Type, Cuisine, Season) VALUES(?,?,?,?);"
+        # use NULL for Season if not provided
+        name, type_, cuisine, season = data
+        season = season if season is not None else None
         cur = self.conn.cursor() 
         cur.execute(sql, data) 
         self.conn.commit() 
