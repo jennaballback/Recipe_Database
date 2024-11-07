@@ -3,7 +3,7 @@ from Main_DataBase import Database
 db = Database("recipedatabase.db")
 
 # Add new recipe
-recipe_data = ("Pancakes", "Breakfast", "American", None)
+recipe_data = ("Pancakes", "Breakfast", "American", None, "Family", "20 Min.")
 recipe_id =db.add_data(recipe_data)
 
 # Add ingredients

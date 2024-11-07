@@ -11,10 +11,12 @@ class Database:
             """
             CREATE TABLE IF NOT EXISTS recipes(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                Name TEXT, 
-                Type TEXT, 
-                Cuisine TEXT, 
-                Season TEXT DEFAULT NULL --Allows Season to be optional
+                name TEXT, 
+                type TEXT, 
+                cuisine TEXT, 
+                season TEXT DEFAULT NULL,
+                author TEXT,
+                total_time TEXT
             );
             """
         )
@@ -63,10 +65,7 @@ class Database:
 
     # Method to insert a new recipe into the recipes table
     def add_data(self, data):
-        sql = "INSERT INTO recipes(Name, Type, Cuisine, Season) VALUES(?,?,?,?);"
-        # use NULL for Season if not provided
-        name, type_, cuisine, season = data
-        season = season if season is not None else None
+        sql = "INSERT INTO recipes(name, type, cuisine, season, author, total_time) VALUES(?,?,?,?,?,?);"
         cur = self.conn.cursor() 
         cur.execute(sql, data) 
         self.conn.commit() 
