@@ -11,10 +11,10 @@ class Database:
             """
             CREATE TABLE recipes(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                Name TEXT, # Name of the recipe
-                Type TEXT, # Type of recipe (e.g. breakfast, dinner, dessert)
-                Cuisine TEXT, # Cuisine of recipe (e.g. italian, mexican)
-                Season TEXT # Seasonal relevance, if any (e.g. winter, summer)
+                Name TEXT, 
+                Type TEXT, 
+                Cuisine TEXT, 
+                Season TEXT 
             );
             """
         )
@@ -24,11 +24,10 @@ class Database:
             """
             CREATE TABLE ingredients(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                recipe_id INTEGER, # integer to identify 
-                ingredient_name TEXT, # e.g. flour, sugar, salt
-                measurement TEXT, # e.g. cups, tablespoons, teaspoons
-                # link 'ingredients' & 'instructions' table to the 'recipes' table
-                FOREIGN KEY (recipe_id) REFERENCES recipes (id)
+                recipe_id INTEGER, 
+                ingredient_name TEXT, 
+                measurement TEXT, 
+                FOREIGN KEY (recipe_id) REFERENCES recipes (id) 
             );
             """
         )
@@ -39,14 +38,14 @@ class Database:
             """
             CREATE TABLE instructions(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                recipe_id INTEGER, # integer to identify 
-                step_name INTEGER, # number for each step 
-                instruction TEXT, # contents of directions on how to make
-                # link 'ingredients' & 'instructions' table to the 'recipes' table
-                FOREIGN KEY (recipe_id) REFERENCES recipes (id)
+                recipe_id INTEGER, 
+                step_number INTEGER, 
+                instruction TEXT, 
+                FOREIGN KEY (recipe_id) REFERENCES recipes (id) 
             );
             """
         )
+
     # Method to establish a connection to the SQLite database
     def create_connection(self): 
         try:
@@ -70,18 +69,21 @@ class Database:
         self.conn.commit() 
         return cur.lastrowid 
     
+    # Method to add a new ingredient for a recipe in the 'ingredients' table
     def add_ingredient(self, recipe_id, ingredient_name, measurement):
         sql = "INSERT INTO ingredients(recipe_id, ingredient_name, measurement) VALUES(?, ?, ?);"
         cur = self.conn.cursor()
         cur.execute(sql, (recipe_id, ingredient_name, measurement))
         self.conn.commit()
 
+    # Method to add an instruction step for a recipe in the 'instructions' table
     def add_instruction(self, recipe_id, step_number, instruction):
         sql = "INSERT INTO instructions(recipe_id, step_number, instruction) VALUES(?, ?, ?);"
         cur = self.conn.cursor()
         cur.execute(sql, (recipe_id, step_number, instruction))
         self.conn.commit()
     
+
     # Method to retrieve all records from the recipes table
     def get_recipe_with_details(self, recipe_id):
         # Fetch recipe basic information
