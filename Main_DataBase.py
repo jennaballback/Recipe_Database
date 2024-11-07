@@ -1,6 +1,6 @@
 from sqlite3 import Error
 import sqlite3 
-
+#test
 class Database:
     def __init__(self, recipe_database):
         self.recipe_database = recipe_database
