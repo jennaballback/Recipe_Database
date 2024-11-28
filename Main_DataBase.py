@@ -31,7 +31,7 @@ class Database:
                 recipe_id INTEGER, 
                 ingredient_name TEXT, 
                 measurement TEXT,
-                FOREIGN KEY (recipe_id) REFERENCES recipes (id) 
+                FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
             );
             """
         )
@@ -46,7 +46,7 @@ class Database:
                 step_number INTEGER, 
                 instruction TEXT, 
                 UNIQUE (recipe_id, step_number),
-                FOREIGN KEY (recipe_id) REFERENCES recipes (id) 
+                FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
             );
             """
         )
@@ -61,19 +61,26 @@ class Database:
                 step_number INTEGER,
                 ingredient_name TEXT,
                 measurement TEXT, 
-                FOREIGN KEY (recipe_id) REFERENCES recipes (id),
-                FOREIGN KEY (step_number) REFERENCES instructions (step_number),
-                FOREIGN KEY (ingredient_name) REFERENCES ingredients (ingredient_name)) 
+                FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE, 
+                FOREIGN KEY (step_number) REFERENCES instructions (step_number) ON DELETE CASCADE,
+                FOREIGN KEY (ingredient_name) REFERENCES ingredients (ingredient_name) ON DELETE CASCADE
             );
             """
         )
 
-    # Method to establish a connection to the SQLite database
+   # Method to establish a connection to the SQLite database
     def create_connection(self): 
         try:
-            return sqlite3.connect(self.recipe_database) # Attempt to connect to the recipe database
+            # Establish the connection
+            conn = sqlite3.connect(self.recipe_database)
+        
+            # Enable foreign key constraints
+            conn.execute("PRAGMA foreign_keys = ON;")
+        
+            return conn
         except Error as e:
-            print(e)
+            print(f"Error connecting to the database: {e}")
+            return None
 
     # Method to execute a SQL command to create a new table (if doesn't exist)
     def create_table(self, create_table_sql):
@@ -120,6 +127,15 @@ class Database:
         # Fetch instructions for the recipe
         cur.execute("SELECT step_number, instruction FROM instructions WHERE recipe_id = ? ORDER BY step_number", (recipe_id,))
         instructions = cur.fetchall()
+
+        # Fetch connections (linking ingredients and instructions)
+        cur.execute("""
+        SELECT i.step_number, c.ingredient_name, c.measurement
+        FROM connections c
+        INNER JOIN instructions i ON c.step_number = i.step_number
+        WHERE c.recipe_id = ?
+        """, (recipe_id,))
+        connections = cur.fetchall()
 
         # Structure and return all details
         return {
