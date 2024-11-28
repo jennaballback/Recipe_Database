@@ -31,6 +31,7 @@ class Database:
                 recipe_id INTEGER, 
                 ingredient_name TEXT, 
                 measurement TEXT,
+                UNIQUE (recipe_id, ingredient_name),
                 FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
             );
             """
@@ -61,8 +62,8 @@ class Database:
                 step_number INTEGER,
                 ingredient_name TEXT,
                 measurement TEXT, 
-                FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE, 
-                FOREIGN KEY (step_number) REFERENCES instructions (step_number) ON DELETE CASCADE,
+                FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE,
+                FOREIGN KEY (recipe_id, step_number) REFERENCES instructions (recipe_id, step_number) ON DELETE CASCADE,
                 FOREIGN KEY (ingredient_name) REFERENCES ingredients (ingredient_name) ON DELETE CASCADE
             );
             """
@@ -101,9 +102,12 @@ class Database:
     # Method to add a new ingredient for a recipe in the 'ingredients' table
     def add_ingredient(self, recipe_id, ingredient_name, measurement):
         sql = "INSERT INTO ingredients(recipe_id, ingredient_name, measurement) VALUES(?, ?, ?);"
-        cur = self.conn.cursor()
-        cur.execute(sql, (recipe_id, ingredient_name, measurement))
-        self.conn.commit()
+        try:
+            cur = self.conn.cursor()
+            cur.execute(sql, (recipe_id, ingredient_name, measurement))
+            self.conn.commit()
+        except sqlite3.IntegrityError as e:
+            print(f"Error adding ingredient: {e}")
 
     # Method to add an instruction step for a recipe in the 'instructions' table
     def add_instruction(self, recipe_id, step_number, instruction):
@@ -141,6 +145,7 @@ class Database:
         return {
             "recipe": recipe,
             "ingredients": ingredients,
-            "instructions": instructions
+            "instructions": instructions,
+            "connections": connections
         }
     
