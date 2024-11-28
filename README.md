@@ -8,6 +8,7 @@ The "recipe" table has attributes of Name, Type, Cuisine, Season, Author, Total 
 - Season (if applicable) includes Autumn, Winter, Spring, and Summer.
 
 The 'ingredients' table and 'instructions' table are children of the parent table 'recipe'.
+
 The 'ingredients' table has attributes of Ingredients ID, Recipe ID, Ingredient Name, and Measurements.
 - Ingredients ID is the primary key.
 - Recipe ID is a unique number that establishes a connection to the 'recipe' table.
@@ -22,6 +23,7 @@ It references:
 - A specific recipe (recipe_id).
 - A specific step in the instructions (step_number).
 - A specific ingredient (ingredient_name).
+
 The 'connections' table has attributes of Connections ID, Measurement, Recipe ID, Step Number, and Ingredient Name.
 - Connections ID is the primary key.
 - Recipe ID, Step Number, and Ingredient Name are foreign keys that make the connection between all the tables. 
