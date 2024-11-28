@@ -30,8 +30,7 @@ class Database:
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
                 recipe_id INTEGER, 
                 ingredient_name TEXT, 
-                measurement TEXT, 
-                PRIMARY KEY (ingredient_name),
+                measurement TEXT,
                 FOREIGN KEY (recipe_id) REFERENCES recipes (id) 
             );
             """
@@ -46,7 +45,7 @@ class Database:
                 recipe_id INTEGER, 
                 step_number INTEGER, 
                 instruction TEXT, 
-                PRIMARY KEY (step_number),
+                UNIQUE (recipe_id, step_number),
                 FOREIGN KEY (recipe_id) REFERENCES recipes (id) 
             );
             """
@@ -58,6 +57,9 @@ class Database:
             """
             CREATE TABLE connections(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                recipe_id INTEGER,
+                step_number INTEGER,
+                ingredient_name TEXT,
                 measurement TEXT, 
                 FOREIGN KEY (recipe_id) REFERENCES recipes (id),
                 FOREIGN KEY (step_number) REFERENCES instructions (step_number),
