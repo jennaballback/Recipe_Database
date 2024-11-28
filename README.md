@@ -1,16 +1,23 @@
 # Recipe_Database
 
 A collection of all the recipes we have found and use as a family.
-Organized by "recipe card" that includes the ingredients & measurements, instructions, author, and total time.
-The "recipe" table has attributes of Name, Type, Cuisine, Season, Author, and Total Time.
+
+The "recipe" table has attributes of Name, Type, Cuisine, Season, Author, Total Time, Yield, and an Image.
 - Type includes Breakfast, Lunch, Dinner, Dessert, etc.
 - Cuisine includes Italian, American, Mexican, etc.
 - Season (if applicable) includes Autumn, Winter, Spring, and Summer.
 
 The 'ingredients' table and 'instructions' table are children of the parent table 'recipe'.
-The 'ingredients' table has attributes of Recipe ID, Ingredients, and Measurements.
+The 'ingredients' table has attributes of Ingredients ID, Recipe ID, Ingredient Name, and Measurements.
+- Ingredients ID is the primary key.
 - Recipe ID is a unique number that establishes a connection to the 'recipe' table.
 
-The 'instructions' table has attributes of Recipe ID, Step Number, and Instructions.
+The 'instructions' table has attributes of Instructions ID, Recipe ID, Step Number, and Instructions.
+- Instructions ID is the primary key.
 - Recipe ID is a unique number that establishes a connection to the 'recipe' table.
 - Step Number tracks the numerical order of the instructions.
+
+The 'connections' table creates a connection between 'ingredients' & 'instructions' tables
+The 'connections' table has attributes of Connections ID, Measurement, Recipe ID, Step Number, and Ingredient Name.
+- Connections ID is the primary key.
+- Recipe ID, Step Number, and Ingredient Name are foreign keys that make the connection between all the tables. 
