@@ -18,7 +18,8 @@ class Database:
                 author TEXT,
                 total_time TEXT,
                 yield TEXT,
-                image TEXT
+                image TEXT,
+                UNIQUE (name, type, cuisine)
             );
             """
         )
@@ -31,12 +32,12 @@ class Database:
                 recipe_id INTEGER, 
                 ingredient_name TEXT, 
                 measurement TEXT,
-                UNIQUE (recipe_id, ingredient_name),
+                UNIQUE (recipe_id, ingredient_name), 
                 FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
             );
             """
         )
-
+        
 
         # Create the 'instructions' table
         self.create_table(
@@ -64,10 +65,13 @@ class Database:
                 measurement TEXT, 
                 FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE,
                 FOREIGN KEY (recipe_id, step_number) REFERENCES instructions (recipe_id, step_number) ON DELETE CASCADE,
-                FOREIGN KEY (ingredient_name) REFERENCES ingredients (ingredient_name) ON DELETE CASCADE
+                FOREIGN KEY (recipe_id, ingredient_name) REFERENCES ingredients (recipe_id, ingredient_name) ON DELETE CASCADE
             );
             """
         )
+
+
+
 
    # Method to establish a connection to the SQLite database
     def create_connection(self): 
@@ -77,11 +81,11 @@ class Database:
         
             # Enable foreign key constraints
             conn.execute("PRAGMA foreign_keys = ON;")
-        
             return conn
         except Error as e:
             print(f"Error connecting to the database: {e}")
             return None
+        
 
     # Method to execute a SQL command to create a new table (if doesn't exist)
     def create_table(self, create_table_sql):
@@ -112,9 +116,12 @@ class Database:
     # Method to add an instruction step for a recipe in the 'instructions' table
     def add_instruction(self, recipe_id, step_number, instruction):
         sql = "INSERT INTO instructions(recipe_id, step_number, instruction) VALUES(?, ?, ?);"
-        cur = self.conn.cursor()
-        cur.execute(sql, (recipe_id, step_number, instruction))
-        self.conn.commit()
+        try:
+            cur = self.conn.cursor()
+            cur.execute(sql, (recipe_id, step_number, instruction))
+            self.conn.commit()
+        except sqlite3.IntegrityError as e:
+            print(f"Error adding instruction: {e}")
     
 
     # Method to retrieve all records from the recipes table
@@ -136,7 +143,8 @@ class Database:
         cur.execute("""
         SELECT i.step_number, c.ingredient_name, c.measurement
         FROM connections c
-        INNER JOIN instructions i ON c.step_number = i.step_number
+        INNER JOIN instructions i 
+        ON c.step_number = i.step_number AND c.recipe_id = i.recipe_id
         WHERE c.recipe_id = ?
         """, (recipe_id,))
         connections = cur.fetchall()
@@ -149,3 +157,34 @@ class Database:
             "connections": connections
         }
     
+
+    # Method to delete a recipe & its associated data using cascading deletes
+    def delete_recipe(self, recipe_id):
+        try:
+            sql = "DELETE FROM recipes WHERE id = ?"
+            cur = self.conn.cursor()
+            cur.execute(sql, (recipe_id,))
+            self.conn.commit()
+            if cur.rowcount == 0:
+                print(f"No recipe found with ID {recipe_id}.")
+            else:
+                print(f"Recipe with ID {recipe_id} deleted successfully.")
+        except sqlite3.Error as e:
+            print(f"Error deleting recipe: {e}")
+
+
+
+    # Updates recipe details
+    def update_recipe(self, recipe_id, data):
+        sql = """
+        UPDATE recipes
+        SET name = ?, type = ?, cuisine = ?, season = ?, author = ?, total_time = ?
+        WHERE id = ?
+        """
+        try:
+            cur = self.conn.cursor()
+            cur.execute(sql, (*data, recipe_id))
+            self.conn.commit()
+        except sqlite3.Error as e:
+            print(f"Error updating recipe: {e}")
+
