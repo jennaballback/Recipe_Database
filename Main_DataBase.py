@@ -44,9 +44,9 @@ class Database:
             """
             CREATE TABLE instructions(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                recipe_id INTEGER, 
-                step_number INTEGER, 
-                instruction TEXT, 
+                recipe_id INTEGER NOT NULL, 
+                step_number INTEGER NOT NULL, 
+                instruction TEXT NOT NULL, 
                 UNIQUE (recipe_id, step_number),
                 FOREIGN KEY (recipe_id) REFERENCES recipes (id) ON DELETE CASCADE
             );

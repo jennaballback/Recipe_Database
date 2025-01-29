@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ category }} Recipes</title>
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}"> -->
+</head>
+<body>
+    <header>
+        <h1>{{ category }} Recipes</h1>
+    </header>
+    <main>
+        <ul>
+            {% for recipe in recipes %}
+            <li>
+                <a href="/all-recipes/{{ recipe['id'] }}">{{ recipe['name'] }}</a>
+                <p>Total Time: {{ recipe['total_time'] }}</p>
+                <p>Cuisine: {{ recipe['cuisine'] }}</p>
+            </li>
+            {% endfor %}
+        </ul>
+    </main>
+</body>
+</html>

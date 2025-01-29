@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+</head>
+<body>
+    <h1>Enter Your Information</h1>
+    <form action="/submit" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <br><br> 
+
+        <p>Select the Type:</p>
+        <input type="radio" id="breakfast" name="category" value="Breakfast" required>
+        <label for="breakfast">Breakfast</label>
+        <br>
+        <input type="radio" id="lunch" name="category" value="Lunch">
+        <label for="lunch">Lunch</label>
+        <br>
+        <input type="radio" id="dinner" name="category" value="Dinner">
+        <label for="dinner">Dinner</label>
+        <br>
+        <input type="radio" id="dessert" name="category" value="Dessert">
+        <label for="dessert">Dessert</label>
+        <br><br>
+        
+        <label for="name">Cuisine:</label>
+        <input type="text" id="cuisine" name="cuisine" required>
+        <br><br> 
+        
+        <p>Select the Season:</p>
+        <input type="radio" id="autumn" name="category" value="Autumn">
+        <label for="autumn">Autumn</label>
+        <br>
+        <input type="radio" id="winter" name="category" value="Winter">
+        <label for="winter">Winter</label>
+        <br>
+        <input type="radio" id="spring" name="category" value="Spring">
+        <label for="spring">Spring</label>
+        <br>
+        <input type="radio" id="summer" name="category" value="Summer">
+        <label for="summer">Summer</label>
+        <br><br>
+
+        <label for="name">Author:</label>
+        <input type="text" id="author" name="author" required>
+        <br><br>
+
+        <label for="time">Total Time:</label>
+        <input type="text" id="time" name="time" required>
+        <br><br>
+
+        <label for="name">Yield:</label>
+        <input type="text" id="yield" name="yield">
+        <br><br>
+
+        <label for="name">Photo:</label>
+        <input type="text" id="photo" name="photo">
+        <br><br>
+
+        <!-- Ingredients Section -->
+        <h3>Ingredients</h3>
+        <div id="ingredients-container">
+            <div class="ingredient">
+                <input type="text" name="ingredient_name[]" placeholder="Ingredient Name" required>
+                <input type="text" name="measurement[]" placeholder="Measurement (e.g., 1 cup)" required>
+            </div>
+        </div>
+        <button type="button" onclick="addIngredient()">Add Ingredient</button>
+        <br><br>
+
+        <!-- Instructions Section -->
+        <h3>Instructions</h3>
+        <div id="instructions-container">
+            <div class="instruction">
+                <textarea name="instruction[]" placeholder="Instruction" rows="2" required></textarea>
+            </div>
+        </div>
+        <button type="button" onclick="addInstruction()">Add Instruction</button>
+        <br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
+
+<script>
+    function addIngredient() {
+        const container = document.getElementById('ingredients-container');
+        const div = document.createElement('div');
+        div.classList.add('ingredient');
+        div.innerHTML = `
+            <input type="text" name="ingredient_name[]" placeholder="Ingredient Name" required>
+            <input type="text" name="measurement[]" placeholder="Measurement (e.g., 1 cup)" required>
+        `;
+        container.appendChild(div);
+    }
+
+    function addInstruction() {
+        const container = document.getElementById('instructions-container');
+        const div = document.createElement('div');
+        div.classList.add('instruction');
+        div.innerHTML = `
+            <textarea name="instruction[]" placeholder="Instruction" rows="2" required></textarea>
+        `;
+        container.appendChild(div);
+    }
+</script>

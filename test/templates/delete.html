@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Message</title>
+</head>
+<body>
+    <h1>Want to Delete this Message?</h1>
+    <form action="/confirm/{{ id }}" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="{{ name }}" required><br><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="{{ email }}" required><br><br>
+        
+        <label for="message">Message:</label><br>
+        <textarea id="message" name="message" rows="4" cols="50" required>{{ message }}</textarea><br><br>
+        
+        <button type="submit">Confirm</button>
+    </form>
+    <a href="/messages">Cancel</a>
+</body>
+</html>

@@ -1,9 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ recipe['name'] }}</title>
+</head>
+<body>
+    <header>
+        <h1>{{ recipe['name'] }}</h1>
+        <p><strong>Type:</strong> {{ recipe['type'] }}</p>
+        <p><strong>Cuisine:</strong> {{ recipe['cuisine'] }}</p>
+        <p><strong>Author:</strong> {{ recipe['author'] }}</p>
+        <p><strong>Total Time:</strong> {{ recipe['total_time'] }}</p>
+        <p><strong>Yield:</strong> {{ recipe['yield'] }}</p>
+    </header>
 
+    <main>
+        <!-- Ingredients Section -->
+        <section>
+            <h2>Ingredients</h2>
+            <ul>
+                {% for ingredient in ingredients %}
+                <li>{{ ingredient['ingredient_name'] }} - {{ ingredient['measurement'] }}</li>
+                {% endfor %}
+            </ul>
+        </section>
 
-{% for recipe in recipes %}
-    <li>{{ recipe ['name'] }},
-        {{ recipe ['id'] }}
-    </li>
-{% endfor %}
-<a href="/about">About Page</a>
-
+        <!-- Instructions Section -->
+        <section>
+            <h2>Instructions</h2>
+            <ol>
+                {% for instruction in instructions %}
+                <li>{{ instruction['instruction'] }}</li>
+                {% endfor %}
+            </ol>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Recipe Box</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header class="main-header">
+        <!-- Logo Section -->
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/arlogo.png') }}" alt="Logo">
+            <span>The Recipe Box</span>
+        
+        
+        <!-- Navigation Links -->
+        <nav class="nav-links">
+            <a href="/all-recipes"><img src="{{ url_for('static', filename='images/arlogo.png') }}" alt="All Recipes">All Recipes</a>
+            <a href="/breakfast"><img src="{{ url_for('static', filename='images/breakfast.png') }}" alt="Breakfast">Breakfast</a>
+            <a href="/lunch"><img src="{{ url_for('static', filename='images/lunch.png') }}" alt="Lunch">Lunch</a>
+            <a href="/dinner"><img src="{{ url_for('static', filename='images/dinner.png') }}" alt="Dinner">Dinner</a>
+            <a href="/dessert"><img src="{{ url_for('static', filename='images/dessert.png') }}" alt="Dessert">Dessert</a>
+            <a href="/sides"><img src="{{ url_for('static', filename='images/sites.png') }}" alt="Sites">Sites</a>
+        </nav>
+
+        <!-- Search and Menu Icons 
+        <div class="header-icons">
+            <a href="/search"><img src="{{ url_for('static', filename='icons/search.png') }}" alt="Search"></a>
+            <a href="/menu"><img src="{{ url_for('static', filename='icons/menu.png') }}" alt="Menu"></a>
+        </div> -->
+    </header>
+</body>
+</html>
+
+
+
+    <header>
+        <h1>Welcome to the Recipe Database</h1>
+        <nav>
+            <a href="/add">Add</a>
+        </nav>
+    </header>
+    <main>
+        <h2>Explore Recipes</h2>
+        <p>Welcome to the ultimate recipe database! Use the navigation buttons above to browse through the app.</p>
+    </main>
+</body>
+</html>
+

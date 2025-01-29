@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages</title>
+</head>
+<body>
+    <h1>Submitted Messages</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Message</th>
+            <th>Actions</th>
+            <th>Delete</th>
+        </tr>
+        {% for id, name, email, message in messages %}
+        <tr>
+            <td>{{ id }}</td>
+            <td>{{ name }}</td>
+            <td>{{ email }}</td>
+            <td>{{ message }}</td>
+            <td>
+                <a href="/edit/{{ id }}">Edit</a>
+            </td>
+            <td>
+                <a href="/delete/{{ id }}">Delete</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <a href="/">Add New Message</a>
+</body>
+</html>
