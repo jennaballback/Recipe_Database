@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
 import sqlite3
+import os
 
 # create a Flask app instance
 app = Flask(__name__)
@@ -7,7 +8,11 @@ DATABASE = "recipedatabase.db"
 
 # Helper function to get a database connection 
 def get_db_connection(): 
-    conn = sqlite3.connect(DATABASE) 
+    db_path = os.path.abspath(DATABASE)
+    print("Using Database FIle:", db_path)
+
+    # conn = sqlite3.connect(DATABASE) 
+    conn = sqlite3.connect(db_path, timeout=10)
     conn.row_factory = sqlite3.Row 
     return conn
 
@@ -32,17 +37,32 @@ def submit():
     yield_value = request.form.get('yield')
     photo = request.form.get('photo')
 
+    if not name or not category or not time:
+        return "Error: Missing required fields", 400
+
     # Insert into the database
     conn = get_db_connection()
     cur = conn.cursor()
-    conn.execute(
+    cur.execute(
         """
         INSERT INTO recipes (name, type, cuisine, season, author, total_time, yield, image)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (name, category, cuisine, None, author, time, yield_value, photo)
     )
+    conn.commit()
+    print("Recipe inserted, lastrowid: ", cur.lastrowid)
     recipe_id = cur.lastrowid  # Get the ID of the inserted recipe
+
+    print("Recipe inserted, lastrowid: ", cur.lastrowid)
+    # Verify recipe_id
+    if not recipe_id:
+        print("ERROR: lastrowid is NULL - Checking database")
+        cur.execute("SELECT * FROM recipes;")
+        print("Existing Recipes:", cur.fetchall())  # Print current recipes
+        return "Error: Recipe ID is NULL after insert", 500
+    
+    print("Recipe ID:", recipe_id)
 
     # Add ingredients
     ingredient_names = request.form.getlist('ingredient_name[]')

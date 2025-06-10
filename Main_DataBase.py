@@ -11,8 +11,8 @@ class Database:
             """
             CREATE TABLE IF NOT EXISTS recipes(
                 id INTEGER PRIMARY KEY AUTOINCREMENT, 
-                name TEXT, 
-                type TEXT, 
+                name TEXT NOT NULL, 
+                type TEXT NOT NULL, 
                 cuisine TEXT, 
                 season TEXT DEFAULT NULL,
                 author TEXT,
