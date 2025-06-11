@@ -188,3 +188,5 @@ class Database:
         except sqlite3.Error as e:
             print(f"Error updating recipe: {e}")
 
+
+

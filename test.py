@@ -105,11 +105,8 @@ def all_recipes():
 @app.route('/all-recipes/<int:id>')
 def recipe_details(id):
     conn = get_db_connection() 
-    recipe = conn.execute('SELECT * FROM recipes WHERE id = ?', (id,)).fetchall() 
-    # Fetch ingredients for the recipe
+    recipe = conn.execute('SELECT * FROM recipes WHERE id = ?', (id,)).fetchone()  # Use fetchone() instead of fetchall()
     ingredients = conn.execute('SELECT ingredient_name, measurement FROM ingredients WHERE recipe_id = ?', (id,)).fetchall()
-
-    # Fetch instructions for the recipe
     instructions = conn.execute('SELECT step_number, instruction FROM instructions WHERE recipe_id = ? ORDER BY step_number', (id,)).fetchall()
     conn.close()
     return render_template('index.html', recipe=recipe, ingredients=ingredients, instructions=instructions)
@@ -120,6 +117,24 @@ def category_recipes(category):
     recipes = conn.execute('SELECT * FROM recipes WHERE type = ?', (category.capitalize(),)).fetchall()
     conn.close()
     return render_template('category.html', recipes=recipes, category=category.capitalize())
+
+# delete a recipe
+@app.route('/delete_recipe/<int:recipe_id>', methods=['POST'])
+def delete_recipe(recipe_id):
+    conn = get_db_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute("DELETE FROM recipes WHERE id = ?", (recipe_id,))
+        conn.commit()
+        if cur.rowcount == 0:
+            return f"No recipe found with ID {recipe_id}.", 404
+        else:
+            return f"Recipe with ID {recipe_id} deleted successfully.", 200
+    except sqlite3.Error as e:
+        conn.rollback()
+        return f"Error deleting recipe: {e}", 500
+    finally:
+        conn.close()
 
 
 

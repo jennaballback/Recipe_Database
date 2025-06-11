@@ -21,7 +21,7 @@
             <h2>Ingredients</h2>
             <ul>
                 {% for ingredient in ingredients %}
-                <li>{{ ingredient['ingredient_name'] }} - {{ ingredient['measurement'] }}</li>
+                    <li>{{ ingredient['ingredient_name'] }} - {{ ingredient['measurement'] }}</li>
                 {% endfor %}
             </ul>
         </section>
@@ -31,10 +31,18 @@
             <h2>Instructions</h2>
             <ol>
                 {% for instruction in instructions %}
-                <li>{{ instruction['instruction'] }}</li>
+                    <li>{{ instruction['instruction'] }}</li>
                 {% endfor %}
             </ol>
         </section>
+
+        <!-- Delete Form -->
+        <form action="{{ url_for('delete_recipe', recipe_id=recipe['id']) }}" method="post" onsubmit="return confirm('Are you sure you want to delete this recipe?');">
+            <button type="submit">Delete Recipe</button>
+        </form>
+
+        <!-- Back to All Recipes Link -->
+        <a href="{{ url_for('all_recipes') }}">Back to All Recipes</a>
     </main>
 </body>
 </html>
