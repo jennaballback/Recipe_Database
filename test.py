@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 import os
 
@@ -136,7 +136,80 @@ def delete_recipe(recipe_id):
     finally:
         conn.close()
 
+@app.route('/modify-recipe/<int:id>', methods=['GET', 'POST'])
+def modify_recipe(id):
+    conn = get_db_connection()
+    cur = conn.cursor()
 
+    try:
+        if request.method == 'POST':
+            cur.execute("SELECT id FROM recipes WHERE id = ?", (id,))
+            if not cur.fetchone():
+                conn.close()
+                return "Recipe not found", 404
+            
+            cur.execute("""
+                UPDATE recipes
+                SET name = ?, type = ?, cuisine = ?, season = ?, author = ?, total_time = ?, yield = ?, image = ?
+                WHERE id = ?
+            """, (
+                request.form['name'],
+                request.form['type'],
+                request.form.get('cuisine', None),
+                request.form.get('season', None),  # Use get() with default None
+                request.form.get('author', None),
+                request.form.get('total_time', None),
+                request.form.get('yield', None),
+                request.form.get('image', None),
+                id
+            ))
+            cur.execute("DELETE FROM ingredients WHERE recipe_id = ?", (id,))
+            cur.execute("DELETE FROM instructions WHERE recipe_id = ?", (id,))
+            conn.commit()
+            
+            for name, meas in zip(request.form.getlist('ingredient_name[]'), request.form.getlist('measurement[]')):
+                if name and meas:
+                    cur.execute("""
+                        INSERT INTO ingredients (recipe_id, ingredient_name, measurement)
+                        VALUES (?, ?, ?)
+                    """, (id, name, meas))
+            
+            instructions = request.form.getlist('instruction[]')
+            for i, inst in enumerate(instructions, 1):
+                if inst:
+                    cur.execute("""
+                        INSERT INTO instructions (recipe_id, step_number, instruction)
+                        VALUES (?, ?, ?)
+                    """, (id, i, inst))
+            
+            if 'photo' in request.files and request.files['photo'].filename:
+                photo = request.files['photo']
+                photo_path = f"static/images/{id}_{photo.filename}"
+                photo.save(photo_path)
+                cur.execute("""
+                    UPDATE recipes
+                    SET image = ?
+                    WHERE id = ?
+                """, (f"/static/images/{id}_{photo.filename}", id))
+            
+            conn.commit()
+            conn.close()
+            return redirect(url_for('recipe_details', id=id))
+        
+        cur.execute("SELECT * FROM recipes WHERE id = ?", (id,))
+        recipe = cur.fetchone()
+        if not recipe:
+            conn.close()
+            return "Recipe not found", 404
+        cur.execute("SELECT ingredient_name, measurement FROM ingredients WHERE recipe_id = ?", (id,))
+        ingredients = cur.fetchall()
+        cur.execute("SELECT step_number, instruction FROM instructions WHERE recipe_id = ? ORDER BY step_number", (id,))
+        instructions = cur.fetchall()
+        conn.close()
+        return render_template('modify.html', recipe=recipe, ingredients=ingredients, instructions=instructions)
+    except sqlite3.Error as e:
+        conn.close()
+        return f"Database error: {e}", 500
 
 # run the app if this file is executed
 if __name__ == '__main__':

@@ -3,125 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Recipe</title>
-    <!-- Bootstrap CSS -->
+    <title>Modify Recipe</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { padding: 20px; background-color: #f8f9fa; }
         .form-section { margin-bottom: 20px; }
         .ingredient-row, .instruction-row { margin-bottom: 10px; }
         .preview { max-width: 200px; margin-top: 10px; }
+        .remove-btn { margin-left: 10px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="text-center mb-4">Add Your Recipe</h1>
+        <h1 class="text-center mb-4">Modify Recipe: {{ recipe['name'] }}</h1>
         <form method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
-            <!-- Recipe Details Section -->
             <fieldset class="form-section border p-3 rounded">
                 <legend class="fw-bold">Recipe Details</legend>
                 <div class="mb-3">
                     <label for="name" class="form-label">Name *</label>
-                    <input type="text" class="form-control" id="name" name="name" required placeholder="e.g., Chocolate Cake">
+                    <input type="text" class="form-control" id="name" name="name" value="{{ recipe['name'] }}" required>
                     <div class="invalid-feedback">Please enter a recipe name.</div>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Type *</label>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="type-breakfast" name="type" value="Breakfast" required>
+                        <input type="radio" class="form-check-input" id="type-breakfast" name="type" value="Breakfast" {% if recipe['type'] == 'Breakfast' %}checked{% endif %} required>
                         <label class="form-check-label" for="type-breakfast">Breakfast</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="type-lunch" name="type" value="Lunch">
+                        <input type="radio" class="form-check-input" id="type-lunch" name="type" value="Lunch" {% if recipe['type'] == 'Lunch' %}checked{% endif %}>
                         <label class="form-check-label" for="type-lunch">Lunch</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="type-dinner" name="type" value="Dinner">
+                        <input type="radio" class="form-check-input" id="type-dinner" name="type" value="Dinner" {% if recipe['type'] == 'Dinner' %}checked{% endif %}>
                         <label class="form-check-label" for="type-dinner">Dinner</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="type-dessert" name="type" value="Dessert">
+                        <input type="radio" class="form-check-input" id="type-dessert" name="type" value="Dessert" {% if recipe['type'] == 'Dessert' %}checked{% endif %}>
                         <label class="form-check-label" for="type-dessert">Dessert</label>
                     </div>
                     <div class="invalid-feedback">Please select a type.</div>
                 </div>
                 <div class="mb-3">
                     <label for="cuisine" class="form-label">Cuisine</label>
-                    <input type="text" class="form-control" id="cuisine" name="cuisine" placeholder="e.g., Italian">
+                    <input type="text" class="form-control" id="cuisine" name="cuisine" value="{{ recipe['cuisine'] or '' }}">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Season</label>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="season-autumn" name="season" value="Autumn">
+                        <input type="radio" class="form-check-input" id="season-autumn" name="season" value="Autumn" {% if recipe['season'] == 'Autumn' %}checked{% endif %}>
                         <label class="form-check-label" for="season-autumn">Autumn</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="season-winter" name="season" value="Winter">
+                        <input type="radio" class="form-check-input" id="season-winter" name="season" value="Winter" {% if recipe['season'] == 'Winter' %}checked{% endif %}>
                         <label class="form-check-label" for="season-winter">Winter</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="season-spring" name="season" value="Spring">
+                        <input type="radio" class="form-check-input" id="season-spring" name="season" value="Spring" {% if recipe['season'] == 'Spring' %}checked{% endif %}>
                         <label class="form-check-label" for="season-spring">Spring</label>
                     </div>
                     <div class="form-check">
-                        <input type="radio" class="form-check-input" id="season-summer" name="season" value="Summer">
+                        <input type="radio" class="form-check-input" id="season-summer" name="season" value="Summer" {% if recipe['season'] == 'Summer' %}checked{% endif %}>
                         <label class="form-check-label" for="season-summer">Summer</label>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="author" class="form-label">Author</label>
-                    <input type="text" class="form-control" id="author" name="author" placeholder="e.g., Family">
+                    <input type="text" class="form-control" id="author" name="author" value="{{ recipe['author'] or '' }}">
                 </div>
                 <div class="mb-3">
                     <label for="total_time" class="form-label">Total Time</label>
-                    <input type="text" class="form-control" id="total_time" name="total_time" placeholder="e.g., 30 Min">
+                    <input type="text" class="form-control" id="total_time" name="total_time" value="{{ recipe['total_time'] or '' }}">
                 </div>
                 <div class="mb-3">
                     <label for="yield" class="form-label">Yield</label>
-                    <input type="text" class="form-control" id="yield" name="yield" placeholder="e.g., 4 servings">
+                    <input type="text" class="form-control" id="yield" name="yield" value="{{ recipe['yield'] or '' }}">
                 </div>
                 <div class="mb-3">
                     <label for="photo" class="form-label">Photo</label>
                     <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
-                    <div id="photoPreview" class="preview"></div>
+                    {% if recipe['image'] %}
+                        <img src="{{ recipe['image'] }}" alt="Current Photo" class="preview">
+                    {% endif %}
                 </div>
             </fieldset>
 
-            <!-- Ingredients Section -->
             <fieldset class="form-section border p-3 rounded">
                 <legend class="fw-bold">Ingredients</legend>
                 <div id="ingredients-container">
-                    <div class="ingredient-row mb-3">
-                        <div class="row">
-                            <div class="col">
-                                <input type="text" class="form-control" name="ingredient_name[]" placeholder="e.g., Flour" required>
-                            </div>
-                            <div class="col">
-                                <input type="text" class="form-control" name="measurement[]" placeholder="e.g., 1 cup" required>
+                    {% for ing in ingredients %}
+                        <div class="ingredient-row mb-3">
+                            <div class="row">
+                                <div class="col">
+                                    <input type="text" class="form-control" name="ingredient_name[]" value="{{ ing['ingredient_name'] }}" required>
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" name="measurement[]" value="{{ ing['measurement'] }}" required>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-danger btn-sm remove-ingredient">Remove</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    {% endfor %}
                 </div>
                 <button type="button" id="add-ingredient" class="btn btn-primary">Add Ingredient</button>
             </fieldset>
 
-            <!-- Instructions Section -->
             <fieldset class="form-section border p-3 rounded">
                 <legend class="fw-bold">Instructions</legend>
                 <div id="instructions-container">
-                    <div class="instruction-row mb-3">
-                        <input type="text" class="form-control" name="instruction[]" placeholder="e.g., Mix all ingredients" required>
-                    </div>
+                    {% for inst in instructions %}
+                        <div class="instruction-row mb-3">
+                            <input type="text" class="form-control" name="instruction[]" value="{{ inst['instruction'] }}" required>
+                            <button type="button" class="btn btn-danger btn-sm remove-instruction remove-btn">Remove</button>
+                        </div>
+                    {% endfor %}
                 </div>
                 <button type="button" id="add-instruction" class="btn btn-primary">Add Instruction</button>
             </fieldset>
 
-            <button type="submit" class="btn btn-success">Submit</button>
-            <a href="{{ url_for('all_recipes') }}" class="btn btn-secondary">Back to All Recipes</a>
+            <button type="submit" class="btn btn-success" onclick="return confirm('Are you sure you want to update this recipe?')">Update Recipe</button>
+            <a href="{{ url_for('recipe_details', id=recipe['id']) }}" class="btn btn-secondary">Back to Recipe</a>
         </form>
     </div>
 
-    <!-- Bootstrap JS and custom JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Add ingredient row
@@ -137,6 +143,9 @@
                     <div class="col">
                         <input type="text" class="form-control" name="measurement[]" placeholder="e.g., 1 cup" required>
                     </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-danger btn-sm remove-ingredient">Remove</button>
+                    </div>
                 </div>
             `;
             container.appendChild(row);
@@ -147,8 +156,18 @@
             const container = document.getElementById('instructions-container');
             const row = document.createElement('div');
             row.className = 'instruction-row mb-3';
-            row.innerHTML = `<input type="text" class="form-control" name="instruction[]" placeholder="e.g., Mix all ingredients" required>`;
+            row.innerHTML = `
+                <input type="text" class="form-control" name="instruction[]" placeholder="e.g., Mix all ingredients" required>
+                <button type="button" class="btn btn-danger btn-sm remove-instruction remove-btn">Remove</button>
+            `;
             container.appendChild(row);
+        });
+
+        // Remove ingredient or instruction
+        document.querySelectorAll('.remove-ingredient, .remove-instruction').forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.ingredient-row, .instruction-row').remove();
+            });
         });
 
         // Form validation
