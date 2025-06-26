@@ -93,13 +93,29 @@ def submit():
     # Redirect to all recipes page
     return redirect('/all-recipes')
 
-# view all the recipes
+# view all the recipes and supports the search bar
 @app.route('/all-recipes')
 def all_recipes():
     conn = get_db_connection() 
-    recipes = conn.execute(f'SELECT * FROM recipes').fetchall() 
+    cur = conn.cursor()
+
+    # Get the search query from the request, default to empty string if not provided
+    search_query = request.args.get('search', '').strip()
+
+    # Build the SQL query dynamically
+    query = "SELECT * FROM recipes WHERE 1=1"
+    params = []
+    if search_query:
+        # Search across name, type, and cuisine with LIKE operator
+        query += " AND (name LIKE ? OR type LIKE ? OR cuisine LIKE ?)"
+        params.extend([f'%{search_query}%'] * 3)
+
+    # Execute the query with parameters to prevent SQL injection
+    cur.execute(query, params)
+    recipes = cur.fetchall()
+
     conn.close()
-    return render_template('all.html', recipes = recipes)
+    return render_template('all.html', recipes=recipes, search_query=search_query)
 
 # define a route and a view function
 @app.route('/all-recipes/<int:id>')
